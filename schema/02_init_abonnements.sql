@@ -4,8 +4,6 @@ CREATE TABLE abonnements (
     prix_mensuel DECIMAL(5, 2) NOT NULL
 );
 
-INSERT INTO abonnements (type_abonnement, prix_mensuel)
-VALUES
-    ('Forme', 30.00),
-    ('Premium', 50.00);
-    
+INSERT INTO abonnements (type_abonnement, prix_mensuel) VALUES
+('Forme', 30.00),
+('Premium', 50.00);

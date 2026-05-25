@@ -8,8 +8,7 @@ CREATE TABLE membres (
     abonnement_id INT REFERENCES abonnements (id)
 );
 
-INSERT INTO membres (nom, prenom, email, date_inscription, salle_id, abonnement_id)
-VALUES
-    ('Dupont', 'Jean', 'jean.dupont@email.com', '2026-01-15', 1, 1),
-    ('Martin', 'Alice', 'alice.martin@email.com', '2026-02-20', 2, 2),
-    ('Rousseau', 'Marc', 'marc.rousseau@email.com', '2026-03-05', 1, 2);
+INSERT INTO membres (nom, prenom, email, date_inscription, salle_id, abonnement_id) VALUES
+('Dupont', 'Jean', 'jean.dupont@email.com', '2026-01-15', 1, 1),
+('Martin', 'Alice', 'alice.martin@email.com', '2026-02-20', 2, 2),
+('Rousseau', 'Marc', 'marc.rousseau@email.com', '2026-03-05', 1, 2);
