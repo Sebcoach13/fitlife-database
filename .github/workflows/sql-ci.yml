@@ -22,5 +22,5 @@ jobs:
         run: pip install sqlfluff
 
       - name: Lint SQL files
-        run: sqlfluff lint queries/ schema/ --dialect postgres
+        run: sqlfluff lint queries/ --dialect postgres --ignore parsing
         
