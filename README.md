@@ -234,3 +234,92 @@ Erreur de configuration fatale (Exit Code 2) : SQLFluff plantait à cause de par
 Erreur d'espaces fantômes sous Windows (Exit Code 1) : Les retours à la ligne système et les indentations des clauses INSERT créaient des violations de style permanentes. Résolu en ciblant exclusivement le dossier applicatif queries/ et en ajoutant l'instruction d'indulgence --ignore parsing.
 
 Erreur d'Indexation de Chaînes dans le script Python (Index Out of Range / Passed Columns) : La fonction d'extraction par expressions régulières capturait par erreur la définition de la longueur des tables VARCHAR(100) ou les identifiants d'insertion, provoquant un désalignement des dimensions matricielles de Pandas. Stabilisé de manière définitive en structurant les jeux de données sous forme de matrices Python natives mappées directement sur l'indexation des DataFrames.
+
+
+
+---
+
+## 8. Projet 2 (Spécification Decathlon) : Dashboarding Interactif Local (Streamlit)
+
+Pour répondre aux exigences de restitution visuelle et d'aide à la décision (cas d'étude basé sur les spécifications Decathlon), les analyses statiques ont été portées vers une application web réactive et locale développée en **Python** avec le framework **Streamlit** et la bibliothèque graphique dynamique **Plotly**.
+
+L'application découpe l'affichage en modules distincts, encapsulant la logique métier, la gestion automatique de l'état (*State*) et l'interactivité utilisateur sans surcouche logicielle complexe.
+
+### Code Source de l'Interface Dynamique (`scripts/app_dashboard.py`) :
+```python
+import pandas as pd
+import plotly.express as px
+import streamlit as st
+
+# Configuration de la page web
+st.set_page_config(page_title="FitLife Core Dashboard", page_icon="🏋️‍♂️", layout="wide")
+
+# 1. Base de données simulée (Moteur Pandas)
+salles_data = [
+    [1, 'FitLife Paris 11', '12 Rue de la Roquette, Paris'],
+    [2, 'FitLife Lyon Centre', '45 Rue de la République, Lyon'],
+    [3, 'FitLife Marseille Vieux-Port', '8 Quai du Port, Marseille']
+]
+df_salles = pd.DataFrame(salles_data, columns=["salle_id", "nom_salle", "adresse"]).set_index("salle_id")
+
+abos_data = [
+    [1, 'Forme', 30.00],
+    [2, 'Premium', 50.00]
+]
+df_abos = pd.DataFrame(abos_data, columns=["abonnement_id", "type_abonnement", "prix_mensuel"]).set_index("abonnement_id")
+
+membres_data = [
+    ['Dupont', 'Jean', 'jean.dupont@email.com', '2026-01-15', 1, 1],
+    ['Martin', 'Alice', 'alice.martin@email.com', '2026-02-20', 2, 2],
+    ['Rousseau', 'Marc', 'marc.rousseau@email.com', '2026-03-05', 1, 2]
+]
+df_membres = pd.DataFrame(membres_data, columns=["nom", "prenom", "email", "date_inscription", "salle_id", "abonnement_id"])
+
+# Jointures des tables virtuelles
+df_complet = df_membres.merge(df_abos, left_on="abonnement_id", right_index=True)
+df_complet = df_complet.merge(df_salles, left_on="salle_id", right_index=True)
+
+# 2. Interface Graphique Streamlit
+st.title("🏋️‍♂️ FitLife Analytics — Dashboard Décisionnel")
+st.markdown("Bienvenue sur l'interface de pilotage interactive (Projet 2 - Spécification Decathlon/Sorbonne).")
+st.divider()
+
+# Section KPIs (Cartes Flash)
+col1, col2, col3 = st.columns(3)
+with col1:
+    st.metric(label="Adhérents Actifs", value=f"{len(df_membres)} membres")
+with col2:
+    st.metric(label="Chiffre d'Affaires Mensuel (MRR)", value=f"{df_complet['prix_mensuel'].sum():.2f} €")
+with col3:
+    abo_phare = df_complet["type_abonnement"].value_counts().idxmax()
+    st.metric(label="Formule Plébiscitée", value=abo_phare)
+
+st.divider()
+
+# Section Graphique & Filtre
+col_gauche, col_droite = st.columns([2, 1])
+
+with col_gauche:
+    st.subheader(" Fréquentation par Établissement")
+    df_salles_count = df_complet["nom_salle"].value_counts().reset_index(name="Inscrits")
+    fig = px.bar(
+        df_salles_count, 
+        x="nom_salle", 
+        y="Inscrits", 
+        labels={"nom_salle": "Club", "Inscrits": "Nombre de membres"},
+        color="nom_salle",
+        color_discrete_sequence=px.colors.qualitative.Pastel
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+with col_droite:
+    st.subheader("🔍 Filtre Dynamique CRM")
+    liste_salles = ["Toutes les salles"] + list(df_salles["nom_salle"].unique())
+    salle_selectionnee = st.selectbox("Sélectionnez un établissement :", liste_salles)
+
+    if salle_selectionnee == "Toutes les salles":
+        df_filtre = df_complet
+    else:
+        df_filtre = df_complet[df_complet["nom_salle"] == salle_selectionnee]
+
+    st.dataframe(df_filtre[["prenom", "nom", "type_abonnement"]], use_container_width=True)
