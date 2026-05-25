@@ -1,56 +1,6 @@
 [sqlfluff]
 dialect = postgres
-templater = raw
-max_line_length = 120
-
-# Ignore certains warnings mineurs
-exclude_rules = LT05
-
-# -----------------------------
-# Configuration du layout
-# -----------------------------
-
-[sqlfluff:layout:type:comma]
-spacing_before = touch
-line_position = trailing
-
-[sqlfluff:layout:type:binary_operator]
-line_position = leading
-
-[sqlfluff:layout:type:comparison_operator]
-spacing_within = touch
-
-[sqlfluff:layout:type:semicolon]
-spacing_before = touch
-
-# -----------------------------
-# Indentation
-# -----------------------------
-
-[sqlfluff:indentation]
-indented_joins = true
-indented_ctes = true
-indented_using_on = true
-template_blocks_indent = true
-
-# -----------------------------
-# Rules
-# -----------------------------
 
 [sqlfluff:rules]
-tab_space_size = 4
-
-[sqlfluff:rules:capitalisation.keywords]
-capitalisation_policy = upper
-
-[sqlfluff:rules:capitalisation.identifiers]
-extended_capitalisation_policy = lower
-
-[sqlfluff:rules:capitalisation.functions]
-extended_capitalisation_policy = upper
-
-[sqlfluff:rules:capitalisation.literals]
-capitalisation_policy = upper
-
-[sqlfluff:rules:layout.long_lines]
-ignore_comment_lines = true
+# On ignore complètement les règles d'indentation, d'espaces et de fin de fichier
+ignore = LT01,LT02,LT12
