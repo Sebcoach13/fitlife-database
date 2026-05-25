@@ -8,4 +8,3 @@ INSERT INTO salles (nom, adresse) VALUES
     ('FitLife Paris 11', '12 Rue de la Roquette, Paris'),
     ('FitLife Lyon Centre', '45 Rue de la République, Lyon'),
     ('FitLife Marseille Vieux-Port', '8 Quai du Port, Marseille');
-    

@@ -7,4 +7,3 @@ CREATE TABLE abonnements (
 INSERT INTO abonnements (type_abonnement, prix_mensuel) VALUES
     ('Forme', 30.00),
     ('Premium', 50.00);
-    
